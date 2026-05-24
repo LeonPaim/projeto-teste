@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serviços a Laser - Peças Agrícolas</title>
+    <link rel="stylesheet" href="css/servicos.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <nav class="top-nav">
+            <div class="brand">
+                <img src="assets/logoRj.jpeg" alt="Logo">
+                <strong>RJ - PEÇAS AGRÍCOLAS</strong>
+            </div>
+            <div class="user">
+                <span id="nomeUsuarioLogado">Carregando...</span> 
+                <a href="index.html" class="logout-link" onclick="localStorage.removeItem('usuarioLogado')">Sair</a>
+            </div>
+        </nav>
+
+        <div class="tabs-bar" id="menuNavegacao">
+            </div>
+
+        <main class="main-content">
+            <div class="inventory-card">
+                <div class="inventory-header">
+                    <h2>Ordens de Serviço (Laser)</h2>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="text" id="buscaServicoCliente" class="search-box" placeholder="Pesquisar cliente..." oninput="filtrarPorCliente()" style="margin-bottom: 0; width: 250px;">
+                        <button class="btn-add" onclick="abrirModalServico()">+ Nova O.S.</button>
+                    </div>
+                </div>
+
+                <div class="filters-container" style="flex-wrap: wrap; gap: 10px;">
+                    <button class="btn-filter active" onclick="filtrarServicos('Todos')">Todos</button>
+                    <button class="btn-filter" onclick="filtrarServicos('Não Iniciado')">Não Iniciados</button>
+                    <button class="btn-filter" onclick="filtrarServicos('Iniciado')">Iniciados</button>
+                    <button class="btn-filter" onclick="filtrarServicos('Finalizado')">Finalizados</button>
+                    <button class="btn-filter" onclick="filtrarServicos('Nota Emitida')">Nota Emitida</button>
+                    <button class="btn-filter" onclick="filtrarServicos('Coletado')">Coletados</button>
+                </div>
+
+                <table id="tabelaServicos">
+                    <thead>
+                        <tr>
+                            <th>DATA</th>
+                            <th>CLIENTE</th>
+                            <th>CATEGORIA</th> 
+                            <th>DETALHES CHAPA</th>
+                            <th>OBSERVAÇÕES</th> 
+                            <th>VALOR (R$)</th> 
+                            <th>STATUS</th>
+                            <th>AÇÕES</th> 
+                        </tr>
+                    </thead>
+                    <tbody id="corpoServicos"></tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <div id="modalServico" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <h2 id="tituloModalServ">Nova Ordem de Serviço</h2>
+            <form id="formServico" onsubmit="salvarServico(event)">
+                <div class="input-group">
+                    <label>Cliente *</label>
+                    <select id="clienteServico" required></select>
+                </div>
+
+                <div style="display: flex; gap: 15px;">
+                    <div class="input-group" style="flex: 1;">
+                        <label>Categoria da Peça *</label>
+                        <select id="categoriaServico" required>
+                            <option value="" disabled selected>Selecione...</option>
+                            <option value="Peça de Maquinário">Peça de Maquinário</option>
+                            <option value="Engrenagem / Lâmina">Engrenagem / Lâmina</option>
+                            <option value="Estrutura Metálica">Estrutura Metálica</option>
+                            <option value="Peças Gerais">Peças Gerais</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="flex: 1;">
+                        <label>Orçamento Prévio (R$)</label>
+                        <input type="number" step="0.01" id="orcamentoServico" placeholder="0,00">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 15px;">
+                    <div class="input-group" style="flex: 1;">
+                        <label>Origem da Chapa</label>
+                        <select id="origemChapa" onchange="toggleTamanhoChapa()">
+                            <option value="Cliente">Chapa do Cliente</option>
+                            <option value="Empresa">Chapa da Empresa</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group" style="flex: 1;">
+                        <label>Tamanho do Corte *</label>
+                        <input type="text" id="tamanhoChapa" required placeholder="Ex: 50x50cm">
+                    </div>
+                </div>
+
+                <div id="groupDadosChapaEmpresa" class="input-group" style="display: none;">
+                    <label>Chapa do Estoque a ser Utilizada *</label>
+                    <input type="text" id="chapaParaCortar" placeholder="Descreva o material (Ex: Chapa de Inox 2mm)...">
+                </div>
+
+                <div style="display: flex; gap: 15px;">
+                    <div class="input-group" style="flex: 1;">
+                        <label>Status</label>
+                        <select id="statusServico" onchange="gerenciarCamposDinamicos()">
+                            <option value="Não Iniciado">Não Iniciado</option>
+                            <option value="Iniciado">Iniciado</option>
+                            <option value="Finalizado">Finalizado</option>
+                            <option value="Nota Emitida">Nota Emitida</option>
+                            <option value="Coletado">Coletado</option>
+                        </select>
+                    </div>
+                    <div id="groupTempoServico" class="input-group" style="flex: 1; display: none;">
+                        <label>Tempo Gasto *</label>
+                        <input type="text" id="tempoServico" placeholder="Ex: 40 min">
+                    </div>
+                </div>
+
+                <div id="groupValorFinal" class="input-group" style="display: none;">
+                    <label>Valor Final da Nota (R$) *</label>
+                    <input type="number" step="0.01" id="valorFinalServico" placeholder="0,00">
+                </div>
+
+                <div class="input-group">
+                    <label>Descrição / Observações</label>
+                    <textarea id="descServico" rows="3" placeholder="Detalhes adicionais..."></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="fecharModalServico()">Cancelar</button>
+                    <button type="submit" class="btn-save">Salvar O.S.</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="modalRastreio" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <h2 style="color: var(--azul-meia-noite); text-transform: uppercase;">Rastreamento da O.S.</h2>
+            <div id="timelineRastreio" style="margin: 25px 0; padding-left: 25px; border-left: 2px solid var(--prata-aluminio); position: relative;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" onclick="fecharModalRastreio()" style="width: 100%;">Fechar</button>
+            </div>
+        </div>
+    </div>
+    <script src="js/servicos-logic.js"></script>
+</body>
+</html>

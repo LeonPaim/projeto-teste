@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movimentações - Peças Agrícolas</title>
+    <link rel="stylesheet" href="css/movimentacoes.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <nav class="top-nav">
+            <div class="brand">
+                <img src="assets/logoRj.jpeg" alt="Logo">
+                <strong>RJ - PEÇAS AGRÍCOLAS</strong>
+            </div>
+            <div class="user">
+                <span id="nomeUsuarioLogado">Carregando...</span> 
+                <a href="index.html" class="logout-link" onclick="localStorage.removeItem('usuarioLogado')">Sair</a>
+            </div>
+        </nav>
+
+        <div class="tabs-bar" id="menuNavegacao">
+            </div>
+
+        <main class="main-content">
+            <div class="inventory-card">
+                <div class="inventory-header">
+                    <h2>Movimentações de Estoque</h2>
+                    <button class="btn-add" onclick="abrirModalMov()">+ Nova Movimentação</button>
+                </div>
+
+                <div class="filters-container">
+                    <button class="btn-filter active" onclick="filtrar('Todas')">Todas</button>
+                    <button class="btn-filter" onclick="filtrar('Entrada')">Entradas</button>
+                    <button class="btn-filter" onclick="filtrar('Saída')">Saídas</button>
+                </div>
+
+                <table id="tabelaMovimentacoes">
+                    <thead>
+                        <tr>
+                            <th>DATA/HORA</th>
+                            <th>ITEM</th>
+                            <th>TIPO</th>
+                            <th>QUANTIDADE</th>
+                            <th>DESTINO (CLIENTE)</th> 
+                            <th>RESPONSÁVEL</th> 
+                            <th>AÇÕES</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpoMovimentacoes">
+                        </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <div id="modalMovimentacao" class="modal">
+        <div class="modal-content">
+            <h2>Nova Movimentação</h2>
+            <form id="formMovimento" onsubmit="registrarMovimentacao(event)">
+                <div class="input-group">
+                    <label>Tipo *</label>
+                    <select id="tipoMov" onchange="toggleCliente()" required>
+                        <option value="Entrada">Entrada (Adição ao Estoque)</option>
+                        <option value="Saída">Saída (Baixa no Estoque)</option>
+                    </select>
+                </div>
+
+                <div id="groupCliente" class="input-group" style="display: none;">
+                    <label>Cliente (Destino) *</label>
+                    <select id="clienteMov">
+                        <option value="" disabled selected>Selecione o cliente...</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Produto *</label>
+                    <select id="itemMov" required>
+                        <option value="" disabled selected>Selecione um produto do catálogo...</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>Quantidade *</label>
+                    <input type="number" id="qtdMov" value="0" min="1" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>Observação</label>
+                    <textarea id="obsMov" rows="3" placeholder="Ex: Venda para cliente, quebra de peça, reposição..."></textarea>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="fecharModalMov()">Cancelar</button>
+                    <button type="submit" class="btn-save">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modalDetalhes" class="modal">
+        <div class="modal-content" style="max-width: 450px;">
+            <h2>Detalhes da Movimentação</h2>
+            <div id="conteudoDetalhes" style="margin-bottom: 20px; line-height: 1.6;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" onclick="fecharModalDetalhes()" style="width: 100%;">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/movimentacoes-logic.js"></script>
+</body>
+</html>

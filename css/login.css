@@ -1,0 +1,140 @@
+/* css/login.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+/* Declarando a Paleta de Cores Oficial do Sistema */
+:root {
+    --azul-petroleo: #000A2C;      /* Background principal e identidade */
+    --prata-aluminio: #BEC1CA;     /* Bordas, ícones e detalhes industriais */
+    --cinza-artico: #EDEFF2;       /* Fundo de inputs, painéis e tabelas */
+    --branco-puro: #FFFFFF;        /* Contraste em caixas e textos base */
+    --azul-meia-noite: #01103C;    /* Destaques, botões e tipografia forte */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+/* O fundo da tela de login usa a cor de base da marca para dar profundidade */
+body {
+    background-color: var(--azul-petroleo);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* A caixa de login em Branco Puro para criar contraste nítido */
+.login-container {
+    background: var(--branco-puro);
+    padding: 2.5rem;
+    border-radius: 0.5rem; 
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); 
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    border: 2px solid var(--prata-aluminio); 
+}
+
+.logo {
+    width: 100px;
+    height: auto;
+    margin-bottom: 1.5rem;
+    border-radius: 0.25rem;
+}
+
+/* Tipografia principal usa a variação secundária para não pesar tanto, mantendo a sobriedade */
+h1 {
+    font-size: 1.5rem;
+    color: var(--azul-meia-noite);
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase; 
+}
+
+p {
+    font-size: 0.875rem;
+    color: var(--azul-petroleo);
+    opacity: 0.8;
+    margin-bottom: 2rem;
+}
+
+.input-group {
+    text-align: left;
+    margin-bottom: 1.25rem;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--azul-meia-noite);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+/* Inputs usando o Cinza Ártico para reduzir a fadiga visual e bordas em Prata */
+.input-group input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--prata-aluminio);
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--azul-meia-noite);
+    background-color: var(--cinza-artico);
+    transition: all 0.2s;
+}
+
+/* Foco do input com a cor de destaque secundária */
+.input-group input:focus {
+    outline: none;
+    border-color: var(--azul-meia-noite);
+    background-color: var(--branco-puro);
+    box-shadow: 0 0 0 3px rgba(1, 16, 60, 0.15); 
+}
+
+/* Botão principal em Azul-Meia-Noite Metálico */
+.btn-entrar {
+    width: 100%;
+    padding: 0.875rem;
+    background-color: var(--azul-meia-noite);
+    color: var(--branco-puro);
+    border: none;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    margin-top: 0.5rem;
+}
+
+/* Efeito de hover escurecendo para o Azul Petróleo */
+.btn-entrar:hover {
+    background-color: var(--azul-petroleo);
+}
+
+.btn-entrar:active {
+    transform: scale(0.98);
+}
+
+/* Nota informativa usando o Cinza Ártico e borda Prata */
+.nota-info {
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: var(--cinza-artico);
+    border-radius: 0.25rem;
+    border: 1px solid var(--prata-aluminio);
+}
+
+.nota-info p {
+    margin-bottom: 0;
+    font-size: 0.75rem;
+    color: var(--azul-meia-noite);
+    line-height: 1.25rem;
+    opacity: 1;
+}

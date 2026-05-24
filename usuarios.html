@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Equipe - Peças Agrícolas</title>
+    <link rel="stylesheet" href="css/usuarios.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <nav class="top-nav">
+            <div class="brand">
+                <img src="assets/logoRj.jpeg" alt="Logo">
+                <strong>RJ - PEÇAS AGRÍCOLAS</strong>
+            </div>
+            <div class="user">
+                <span id="nomeUsuarioLogado">Carregando...</span> 
+                <a href="index.html" class="logout-link" onclick="localStorage.removeItem('usuarioLogado')">Sair</a>
+            </div>
+        </nav>
+
+        <div class="tabs-bar" id="menuNavegacao">
+            </div>
+
+        <main class="main-content">
+            <div class="inventory-card">
+                <div class="inventory-header">
+                    <h2>Cadastro e Controle de Equipe</h2>
+                    <button class="btn-add" onclick="abrirModalUsuario()">+ Novo Usuário</button>
+                </div>
+
+                <input type="text" id="buscaUsuario" class="search-box" placeholder="Pesquisar por nome ou e-mail..." oninput="buscarUsuarios()">
+
+                <div class="table-wrapper">
+                    <table id="tabelaUsuarios">
+                        <thead>
+                            <tr>
+                                <th>NOME DO COLABORADOR</th>
+                                <th>E-MAIL DE ACESSO</th>
+                                <th>CARGO / NÍVEL DE PERMISSÃO</th>
+                                <th>AÇÕES</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpoUsuarios">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="modalUsuario" class="modal">
+        <div class="modal-content">
+            <h2 id="tituloModalUsr">Novo Usuário</h2>
+            <form id="formUsuario" onsubmit="salvarUsuario(event)">
+                
+                <div class="input-group">
+                    <label>Nome Completo *</label>
+                    <input type="text" id="nomeUsuario" required placeholder="Ex: Maria Souza">
+                </div>
+
+                <div class="input-group">
+                    <label>E-mail Corporativo *</label>
+                    <input type="email" id="emailUsuario" required placeholder="exemplo@rj.com">
+                </div>
+
+                <div class="input-group">
+                    <label>Senha de Acesso *</label>
+                    <input type="password" id="senhaUsuario" required placeholder="Defina uma senha">
+                </div>
+
+                <div class="input-group">
+                    <label>Cargo / Perfil de Acesso *</label>
+                    <select id="cargoUsuario" required>
+                        <option value="" disabled selected>Selecione um cargo...</option>
+                        <option value="ADMIN">Administrador (Acesso Total)</option>
+                        <option value="ESTOQUISTA">Estoquista (Estoque e Movimentações)</option>
+                        <option value="FINANCEIRO">Financeiro (Clientes, Serviços e Movimentações)</option>
+                        <option value="OPERADOR">Operador de Laser (Apenas tela de Serviços)</option>
+                    </select>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="fecharModalUsuario()">Cancelar</button>
+                    <button type="submit" class="btn-save">Salvar Credenciais</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="js/usuarios-logic.js"></script>
+    <div id="modalConfirmacao" class="modal">
+    <div class="modal-content" style="max-width: 400px; text-align: center;">
+        <h2 style="color: #dc2626; margin-bottom: 10px; font-size: 2rem;">⚠️</h2>
+        <h3 style="color: var(--azul-meia-noite); margin-bottom: 10px;">Atenção!</h3>
+        <p id="textoConfirmacao" style="color: var(--azul-petroleo); margin-bottom: 25px; line-height: 1.5; font-size: 0.9rem;"></p>
+        
+        <div class="modal-footer" style="margin-top: 0; display: flex; gap: 10px;">
+            <button type="button" class="btn-cancel" onclick="fecharModalConfirmacao()">Cancelar</button>
+            <button type="button" class="btn-delete-confirm" onclick="confirmarExclusaoAcao()">Sim, Excluir</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

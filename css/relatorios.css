@@ -1,0 +1,257 @@
+/* css/relatorios.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --azul-petroleo: #000A2C;
+    --prata-aluminio: #BEC1CA;
+    --cinza-artico: #EDEFF2;
+    --branco-puro: #FFFFFF;
+    --azul-meia-noite: #01103C;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--cinza-artico);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* --- BARRA SUPERIOR (TOP NAV) --- */
+.top-nav {
+    height: 65px;
+    background: var(--azul-petroleo);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+    flex-shrink: 0;
+    border-bottom: 2px solid var(--prata-aluminio);
+}
+
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand img { height: 40px; width: auto; border-radius: 4px; }
+.brand strong { font-size: 1.1rem; color: var(--prata-aluminio); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.user { font-size: 0.875rem; color: var(--prata-aluminio); font-weight: 500; }
+
+/* --- BOTÃO DE SAIR ESTILIZADO --- */
+.logout-link { 
+    color: var(--branco-puro); 
+    background-color: #ef4444; 
+    text-decoration: none; 
+    font-weight: 600; 
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-left: 20px; 
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: 1px solid #dc2626;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2); 
+}
+
+.logout-link:hover { 
+    background-color: #dc2626; 
+    box-shadow: 0 4px 6px rgba(220, 38, 38, 0.3);
+}
+
+.logout-link:active {
+    transform: scale(0.96); 
+}
+
+/* --- ABAS (TABS BAR) --- */
+.tabs-bar {
+    height: 50px;
+    background: var(--branco-puro);
+    display: flex;
+    padding: 0 2rem;
+    gap: 10px;
+    border-bottom: 1px solid var(--prata-aluminio);
+    flex-shrink: 0;
+}
+
+.tab-item {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--azul-petroleo);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+.tab-item:hover { color: var(--azul-meia-noite); background-color: var(--cinza-artico); }
+.tab-item.active {
+    color: var(--azul-petroleo);
+    font-weight: 700;
+    border-bottom: 3px solid var(--azul-petroleo);
+    background-color: var(--cinza-artico);
+}
+
+/* --- CONTEÚDO PRINCIPAL --- */
+.main-content { 
+    flex-grow: 1; 
+    padding: 3rem 2rem; 
+    overflow-y: auto; 
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.inventory-card.form-card {
+    background: var(--branco-puro);
+    border-radius: 8px;
+    padding: 3rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--prata-aluminio);
+    width: 100%;
+    max-width: 600px; 
+}
+
+.inventory-header h2 { 
+    font-size: 1.5rem; 
+    font-weight: 700; 
+    color: var(--azul-meia-noite); 
+    text-transform: uppercase;
+    text-align: center;
+}
+
+/* --- FORMULÁRIO DE RELATÓRIOS --- */
+.form-subtitle {
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--azul-petroleo);
+    margin-bottom: 2.5rem;
+    line-height: 1.5;
+}
+
+.input-row {
+    display: flex;
+    gap: 20px;
+}
+
+.input-group { 
+    margin-bottom: 1rem; 
+    text-align: left; 
+    flex: 1;
+}
+
+.input-group label { 
+    display: block; 
+    font-size: 0.75rem; 
+    font-weight: 700; 
+    margin-bottom: 0.5rem; 
+    color: var(--azul-petroleo); 
+    text-transform: uppercase; 
+}
+
+.input-group select {
+    width: 100%; 
+    padding: 12px; 
+    border: 1px solid var(--prata-aluminio); 
+    border-radius: 4px; 
+    font-size: 0.875rem; 
+    background-color: var(--cinza-artico); 
+    color: var(--azul-meia-noite); 
+    outline: none;
+    transition: all 0.2s;
+}
+
+.input-group select:focus { 
+    border-color: var(--azul-meia-noite); 
+    background-color: var(--branco-puro); 
+    box-shadow: 0 0 0 3px rgba(1, 16, 60, 0.1);
+}
+
+/* --- BOTÕES DE EXPORTAÇÃO --- */
+.export-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 2.5rem;
+}
+
+.btn-export {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: transform 0.1s, opacity 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-export:active {
+    transform: scale(0.98);
+}
+
+.btn-export.pdf {
+    background-color: #dc2626; 
+    color: var(--branco-puro);
+}
+.btn-export.pdf:hover { background-color: #b91c1c; }
+
+.btn-export.excel {
+    background-color: #16a34a; 
+    color: var(--branco-puro);
+}
+.btn-export.excel:hover { background-color: #15803d; }
+
+/* Mensagem de Processamento */
+.status-msg {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    text-align: center;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--azul-meia-noite);
+    background-color: #e0f2fe;
+    border: 1px solid #bae6fd;
+    border-radius: 4px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.7; }
+}
+
+
+/* --- BOTÃO DO MODAL DE ALERTA --- */
+.btn-alerta {
+    padding: 12px 30px;
+    background-color: var(--azul-petroleo);
+    color: var(--branco-puro);
+    border: none;
+    border-radius: 4px;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: transform 0.1s, background 0.2s;
+}
+
+.btn-alerta:hover {
+    background-color: var(--azul-meia-noite);
+}
+
+.btn-alerta:active {
+    transform: scale(0.96);
+}

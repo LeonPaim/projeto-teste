@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estoque - Peças Agrícolas</title>
+    <link rel="stylesheet" href="css/estoque.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <nav class="top-nav">
+            <div class="brand">
+                <img src="assets/logoRj.jpeg" alt="Logo">
+                <strong>RJ - PEÇAS AGRÍCOLAS</strong>
+            </div>
+            <div class="user">
+                <span id="nomeUsuarioLogado">Carregando...</span> 
+                <a href="index.html" class="logout-link" onclick="localStorage.removeItem('usuarioLogado')">Sair</a>
+            </div>
+        </nav>
+
+        <div class="tabs-bar" id="menuNavegacao">
+            </div>
+
+        <main class="main-content">
+            <div class="inventory-card">
+                <div class="inventory-header">
+                    <h2>Catálogo de Produtos</h2>
+                    <button class="btn-add" onclick="abrirModal()">+ Cadastrar Novo Item</button>
+                </div>
+
+                <input type="text" id="searchInput" class="search-box" placeholder="Pesquisar por nome ou descrição..." onkeyup="filtrarEstoque()">
+
+                <table id="tabelaEstoque">
+                    <thead>
+                        <tr>
+                            <th>NOME DO PRODUTO</th>
+                            <th>DESCRIÇÃO / CATEGORIA</th>
+                            <th>QTD. ATUAL</th>
+                            <th>LOCALIZAÇÃO</th>
+                            <th>AÇÕES</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpoTabela">
+                        </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <div id="modalEstoque" class="modal">
+        <div class="modal-content">
+            <h2 id="tituloModal">Novo Item</h2>
+            <form id="formEstoque" onsubmit="salvarItem(event)"> 
+                <div class="input-group">
+                    <label>Nome do Produto *</label>
+                    <input type="text" id="nomeItem" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>Descrição / Categoria</label>
+                    <textarea id="descItem" rows="2"></textarea>
+                </div>
+                
+                <div style="display:flex; gap:10px;" id="grupoQuantidade">
+                    <div class="input-group" style="flex:1">
+                        <label>Quantidade Inicial *</label>
+                        <input type="number" id="qtdItem" value="0" min="0" required>
+                    </div>
+                    <div class="input-group" style="flex:1">
+                        <label>Unidade *</label>
+                        <select id="unidadeItem" required>
+                            <option value="" disabled selected>Selecione</option>
+                            <option value="un">Unidade (un)</option>
+                            <option value="ch">Chapa</option>
+                            <option value="kg">Quilograma (kg)</option>
+                            <option value="t">Tonelada (t)</option>
+                            <option value="m">Metro (m)</option>
+                            <option value="br">Barra</option>
+                            <option value="pr">Par</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Localização (Prateleira/Galpão)</label>
+                    <input type="text" id="locItem" placeholder="Ex: Prateleira A3">
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+                    <button type="submit" class="btn-save">Salvar Produto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/estoque-logic.js"></script>
+
+
+    <div id="modalConfirmacao" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 10, 44, 0.7); align-items: center; justify-content: center;">
+        <div class="modal-content" style="background-color: var(--branco-puro); padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 100%; max-width: 400px; text-align: center;">
+            <h2 style="color: #dc2626; margin-bottom: 10px; font-size: 2.5rem;">🗑️</h2>
+            <h3 style="color: var(--azul-meia-noite); margin-bottom: 10px;">Atenção!</h3>
+            <p id="textoConfirmacao" style="color: var(--azul-petroleo); margin-bottom: 25px; line-height: 1.5; font-size: 0.9rem;"></p>
+            <div class="modal-footer" style="display: flex; justify-content: center; gap: 10px;">
+                <button type="button" class="btn-cancel" onclick="fecharModalConfirmacao()">Cancelar</button>
+                <button type="button" class="btn-delete-confirm" onclick="confirmarExclusaoAcao()">Sim, Excluir</button>
+            </div>
+        </div>
+    </div>
+
+
+
+</body>
+                        
+
+</html>

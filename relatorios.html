@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios - Peças Agrícolas</title>
+    <link rel="stylesheet" href="css/relatorios.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <nav class="top-nav">
+            <div class="brand">
+                <img src="assets/logoRj.jpeg" alt="Logo">
+                <strong>RJ - PEÇAS AGRÍCOLAS</strong>
+            </div>
+            <div class="user">
+                <span id="nomeUsuarioLogado">Carregando...</span> 
+                <a href="index.html" class="logout-link" onclick="localStorage.removeItem('usuarioLogado')">Sair</a>
+            </div>
+        </nav>
+
+        <div class="tabs-bar" id="menuNavegacao">
+            </div>
+
+        <main class="main-content">
+            <div class="inventory-card form-card">
+                <div class="inventory-header" style="justify-content: center; margin-bottom: 2rem;">
+                    <h2>Exportação de Relatórios</h2>
+                </div>
+
+                <div class="report-form">
+                    <p class="form-subtitle">Selecione os parâmetros abaixo para gerar o documento analítico de faturamento e produtividade.</p>
+                    
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label>Mês de Referência *</label>
+                            <select id="filtroMes" required>
+                                <option value="" disabled selected>Selecione o mês</option>
+                                <option value="01">Janeiro</option>
+                                <option value="02">Fevereiro</option>
+                                <option value="03">Março</option>
+                                <option value="04">Abril</option>
+                                <option value="05">Maio</option>
+                                <option value="06">Junho</option>
+                                <option value="07">Julho</option>
+                                <option value="08">Agosto</option>
+                                <option value="09">Setembro</option>
+                                <option value="10">Outubro</option>
+                                <option value="11">Novembro</option>
+                                <option value="12">Dezembro</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Ano *</label>
+                            <select id="filtroAno" required>
+                                <option value="" disabled selected>Selecione o ano</option>
+                                <option value="2025">2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-group" style="margin-top: 1.5rem;">
+                        <label>Tipo de Informação *</label>
+                        <select id="filtroTipo" required>
+                            <option value="" disabled selected>Selecione qual relatório deseja exportar...</option>
+                            <option value="PECAS">Relatório de Faturamento: Venda de Peças</option>
+                            <option value="LASER">Relatório de Faturamento: Serviços a Laser (O.S.)</option>
+                        </select>
+                    </div>
+
+                    <div class="export-actions">
+                        <button class="btn-export pdf" onclick="solicitarExportacao('PDF')">
+                            📄 Baixar em PDF
+                        </button>
+                        <button class="btn-export excel" onclick="solicitarExportacao('Excel')">
+                            📊 Baixar em Excel
+                        </button>
+                    </div>
+
+                    <div id="statusExportacao" class="status-msg" style="display: none;">
+                        Processando documento no servidor... Aguarde.
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/relatorios-logic.js"></script>
+    <div id="modalAlerta" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 10, 44, 0.7); align-items: center; justify-content: center;">
+        <div class="modal-content" style="background-color: var(--branco-puro); padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 100%; max-width: 400px; text-align: center;">
+            <h2 style="color: #f59e0b; margin-bottom: 10px; font-size: 2.5rem;">⚠️</h2>
+            <h3 style="color: var(--azul-meia-noite); margin-bottom: 10px;">Atenção!</h3>
+            <p id="textoAlerta" style="color: var(--azul-petroleo); margin-bottom: 25px; line-height: 1.5; font-size: 0.9rem;"></p>
+            
+            <div class="modal-footer" style="display: flex; justify-content: center;">
+                <button type="button" class="btn-alerta" onclick="fecharModalAlerta()">OK, Entendi</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auditoria do Sistema - Peças Agrícolas</title>
+    <link rel="stylesheet" href="css/logs.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <nav class="top-nav">
+            <div class="brand">
+                <img src="assets/logoRj.jpeg" alt="Logo">
+                <strong>RJ - PEÇAS AGRÍCOLAS</strong>
+            </div>
+            <div class="user">
+                <span id="nomeUsuarioLogado">Carregando...</span> 
+                <a href="index.html" class="logout-link" onclick="localStorage.removeItem('usuarioLogado')">Sair</a>
+            </div>
+        </nav>
+
+        <div class="tabs-bar" id="menuNavegacao">
+            </div>
+
+        <main class="main-content">
+            <div class="inventory-card">
+                <div class="inventory-header">
+                    <h2>Histórico de Auditoria (Logs)</h2>
+                    <span class="terminal-badge">Apenas Leitura</span>
+                </div>
+
+                <input type="text" id="buscaLog" class="search-box" placeholder="Filtrar por utilizador, data ou ação..." oninput="filtrarLogs()">
+
+                <div class="terminal-container">
+                    <div class="terminal-header">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                        <span class="terminal-title">console_auditoria.log</span>
+                    </div>
+                    <div class="terminal-body" id="painelLogs">
+                        </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/logs-logic.js"></script>
+</body>
+</html>

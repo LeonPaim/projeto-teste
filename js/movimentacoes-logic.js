@@ -1,4 +1,3 @@
-// js/movimentacoes-logic.js
 
 let estoque = JSON.parse(localStorage.getItem('estoque_rj')) || [];
 let historico = JSON.parse(localStorage.getItem('historico_rj')) || [];
@@ -16,16 +15,15 @@ function verificarAutenticacaoEPermissoes() {
         window.location.href = 'index.html';
         return;
     }
-
     usuarioAtual = JSON.parse(usuarioLogado);
 
-    // Regra: Operador de Laser não tem acesso a Movimentações de Estoque
     if (usuarioAtual.cargo === 'OPERADOR') {
         window.location.href = 'servicos.html';
         return;
     }
 
-    document.getElementById('nomeUsuarioLogado').innerText = `${usuarioAtual.email.split('@')[0]} (${usuarioAtual.cargo})`;
+    const nomeExibicao = usuarioAtual.nome ? usuarioAtual.nome.split(' ')[0] : usuarioAtual.email.split('@')[0];
+    document.getElementById('nomeUsuarioLogado').innerText = `${nomeExibicao} (${usuarioAtual.cargo})`;
 
     const menuContainer = document.getElementById('menuNavegacao');
     let menuHTML = '';
@@ -34,11 +32,10 @@ function verificarAutenticacaoEPermissoes() {
         menuHTML += `<a href="relatorios.html" class="tab-item">📊 Relatórios</a>`;
     }
 
-    if (['ADMIN', 'ESTOQUISTA'].includes(usuarioAtual.cargo)) {
+    if (['ADMIN', 'ESTOQUISTA', 'FINANCEIRO'].includes(usuarioAtual.cargo)) {
         menuHTML += `<a href="estoque.html" class="tab-item">📦 Estoque</a>`;
     }
 
-    // Tela Atual (Movimentações)
     menuHTML += `<a href="movimentacoes.html" class="tab-item active">📝 Movimentações</a>`;
 
     if (['ADMIN', 'FINANCEIRO'].includes(usuarioAtual.cargo)) {
@@ -48,12 +45,11 @@ function verificarAutenticacaoEPermissoes() {
     if (['ADMIN', 'FINANCEIRO', 'OPERADOR'].includes(usuarioAtual.cargo)) {
         menuHTML += `<a href="servicos.html" class="tab-item">⚙️ Serviços</a>`;
     }
-
+    
     if (usuarioAtual.cargo === 'ADMIN') {
         menuHTML += `<a href="usuarios.html" class="tab-item">👤 Usuários</a>`;
         menuHTML += `<a href="logs.html" class="tab-item">🛡️ Logs</a>`;
     }
-
     menuContainer.innerHTML = menuHTML;
 }
 
@@ -86,7 +82,15 @@ function filtrar(tipo) {
     if (!corpo) return;
 
     if (dadosParaExibir.length === 0) {
-        corpo.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--prata-aluminio); font-weight: 600;">Nenhuma movimentação ${tipo !== 'Todas' ? tipo.toLowerCase() : ''} encontrada.</td></tr>`;
+        // Cria uma frase personalizada para cada tipo de filtro
+        let mensagemVazia = "Nenhuma movimentação encontrada.";
+        if (tipo === 'Entrada') {
+            mensagemVazia = "Nenhuma entrada encontrada no estoque.";
+        } else if (tipo === 'Saída') {
+            mensagemVazia = "Nenhuma saída registrada no histórico.";
+        }
+
+        corpo.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--prata-aluminio); font-weight: 600;">${mensagemVazia}</td></tr>`;
         return;
     }
 
@@ -161,10 +165,29 @@ function registrarMovimentacao(e) {
         if (tipo === "Entrada") {
             estoque[idxEstoque].quantidade = saldoAtualizado + qtdNova;
         } else {
+    // Aplica a nova movimentação ao saldo do estoque
+    if (idxEstoque !== -1) {
+        let saldoAtualizado = Number(estoque[idxEstoque].quantidade);
+
+        if (tipo === "Entrada") {
+            estoque[idxEstoque].quantidade = saldoAtualizado + qtdNova;
+        } else {
+            // VERIFICAÇÃO DE ESTOQUE (MICROCOPY)
             if (saldoAtualizado < qtdNova) {
-                alert(`Saldo insuficiente! Estoque atual: ${saldoAtualizado}`);
-                return;
+                const spanErro = document.getElementById('erroEstoqueQtd');
+                const inputQtd = document.getElementById('qtdMov');
+                
+                
+                spanErro.innerText = `⚠️ Estoque atual: ${saldoAtualizado} un.`;
+                spanErro.style.display = 'block';
+                inputQtd.style.border = '2px solid #dc2626'; 
+                
+                return; 
             }
+            estoque[idxEstoque].quantidade = saldoAtualizado - qtdNova;
+        }
+        localStorage.setItem('estoque_rj', JSON.stringify(estoque));
+    }
             estoque[idxEstoque].quantidade = saldoAtualizado - qtdNova;
         }
         localStorage.setItem('estoque_rj', JSON.stringify(estoque));
@@ -188,28 +211,51 @@ function registrarMovimentacao(e) {
     renderizarMovimentacoes();
 }
 
+// Variável global para "lembrar" qual movimentação será apagada
+let idMovParaExcluir = null;
+
+// 1. Função chamada pelo botão vermelho da lixeira na tabela
 function excluirMovimentacao(index) {
-    const mov = historico[index];
-    if (!confirm(`ATENÇÃO: Deseja excluir a movimentação de ${mov.item}?\nO saldo do estoque será recalculado automaticamente.`)) return;
-
-    estoque = JSON.parse(localStorage.getItem('estoque_rj')) || [];
-    const idxEstoque = estoque.findIndex(i => i.nome === mov.item);
-    
-    if (idxEstoque !== -1) {
-        let qtdNoEstoque = Number(estoque[idxEstoque].quantidade);
-        let qtdDaMovimentacao = Number(mov.quantidade);
-
-        if (mov.tipo === "ENTRADA") {
-            estoque[idxEstoque].quantidade = qtdNoEstoque - qtdDaMovimentacao;
-        } else {
-            estoque[idxEstoque].quantidade = qtdNoEstoque + qtdDaMovimentacao;
-        }
-        localStorage.setItem('estoque_rj', JSON.stringify(estoque));
+    // Trava de segurança no JS: Apenas Admin exclui
+    if (usuarioAtual.cargo !== 'ADMIN') {
+        alert("Apenas administradores podem excluir movimentações.");
+        return;
     }
 
-    registrarLogAuditoria(`Excluiu a movimentação de ${mov.tipo} do item: ${mov.item}`);
-    historico.splice(index, 1);
+    idMovParaExcluir = index;
+    // O texto aqui avisa algo importante na regra de negócio de estoque!
+    document.getElementById('textoModalExclusao').innerText = "Tem certeza que deseja excluir este registro? O saldo do material no estoque NÃO será revertido automaticamente.";
+    document.getElementById('modalExclusaoMovimentacao').style.display = 'flex';
+}
+
+// 2. Função para fechar o modal
+function fecharModalExclusao() {
+    idMovParaExcluir = null; 
+    document.getElementById('modalExclusaoMovimentacao').style.display = 'none';
+}
+
+// 3. Função que executa a exclusão após o clique em "Sim, Excluir"
+function executarExclusaoMovimentacao() {
+    if (idMovParaExcluir === null) return;
+
+    historico = JSON.parse(localStorage.getItem('historico_rj')) || [];
+    
+    const index = Number(idMovParaExcluir);
+
+    const movDeletada = historico[index];
+    
+    if (movDeletada && typeof registrarLogAuditoria === 'function') {
+        registrarLogAuditoria(`Excluiu uma movimentação (${movDeletada.tipo}) do material: ${movDeletada.item || 'Desconhecido'}`);
+    }
+
+    if (index >= 0 && index < historico.length) {
+        historico.splice(index, 1);
+    }
+    
     localStorage.setItem('historico_rj', JSON.stringify(historico));
+    
+    fecharModalExclusao(); 
+    
     renderizarMovimentacoes();
 }
 
@@ -248,6 +294,12 @@ function fecharModalMov() {
     document.querySelector('#modalMovimentacao h2').innerText = "Nova Movimentação";
     indexEdicao = null;
     if (document.getElementById('groupCliente')) document.getElementById('groupCliente').style.display = 'none';
+    
+    
+    if (document.getElementById('erroEstoqueQtd')) {
+        document.getElementById('erroEstoqueQtd').style.display = 'none';
+        document.getElementById('qtdMov').style.border = ''; 
+    }
 }
 
 function prepararEdicaoMov(index) {

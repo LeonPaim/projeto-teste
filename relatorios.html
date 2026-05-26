@@ -36,18 +36,6 @@
                             <label>Mês de Referência *</label>
                             <select id="filtroMes" required>
                                 <option value="" disabled selected>Selecione o mês</option>
-                                <option value="01">Janeiro</option>
-                                <option value="02">Fevereiro</option>
-                                <option value="03">Março</option>
-                                <option value="04">Abril</option>
-                                <option value="05">Maio</option>
-                                <option value="06">Junho</option>
-                                <option value="07">Julho</option>
-                                <option value="08">Agosto</option>
-                                <option value="09">Setembro</option>
-                                <option value="10">Outubro</option>
-                                <option value="11">Novembro</option>
-                                <option value="12">Dezembro</option>
                             </select>
                         </div>
 
@@ -55,13 +43,9 @@
                             <label>Ano *</label>
                             <select id="filtroAno" required>
                                 <option value="" disabled selected>Selecione o ano</option>
-                                <option value="2025">2025</option>
-                                <option value="2026">2026</option>
-                                <option value="2027">2027</option>
                             </select>
                         </div>
                     </div>
-
                     <div class="input-group" style="margin-top: 1.5rem;">
                         <label>Tipo de Informação *</label>
                         <select id="filtroTipo" required>
@@ -79,7 +63,6 @@
                             📊 Baixar em Excel
                         </button>
                     </div>
-
                     <div id="statusExportacao" class="status-msg" style="display: none;">
                         Processando documento no servidor... Aguarde.
                     </div>
@@ -87,14 +70,12 @@
             </div>
         </main>
     </div>
-
     <script src="js/relatorios-logic.js"></script>
     <div id="modalAlerta" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 10, 44, 0.7); align-items: center; justify-content: center;">
         <div class="modal-content" style="background-color: var(--branco-puro); padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 100%; max-width: 400px; text-align: center;">
             <h2 style="color: #f59e0b; margin-bottom: 10px; font-size: 2.5rem;">⚠️</h2>
             <h3 style="color: var(--azul-meia-noite); margin-bottom: 10px;">Atenção!</h3>
             <p id="textoAlerta" style="color: var(--azul-petroleo); margin-bottom: 25px; line-height: 1.5; font-size: 0.9rem;"></p>
-            
             <div class="modal-footer" style="display: flex; justify-content: center;">
                 <button type="button" class="btn-alerta" onclick="fecharModalAlerta()">OK, Entendi</button>
             </div>

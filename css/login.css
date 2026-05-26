@@ -17,7 +17,7 @@
     font-family: 'Inter', sans-serif;
 }
 
-/* O fundo da tela de login usa a cor de base da marca para dar profundidade */
+
 body {
     background-color: var(--azul-petroleo);
     display: flex;
@@ -26,7 +26,7 @@ body {
     height: 100vh;
 }
 
-/* A caixa de login em Branco Puro para criar contraste nítido */
+
 .login-container {
     background: var(--branco-puro);
     padding: 2.5rem;
@@ -45,7 +45,7 @@ body {
     border-radius: 0.25rem;
 }
 
-/* Tipografia principal usa a variação secundária para não pesar tanto, mantendo a sobriedade */
+
 h1 {
     font-size: 1.5rem;
     color: var(--azul-meia-noite);
@@ -76,7 +76,7 @@ p {
     letter-spacing: 0.025em;
 }
 
-/* Inputs usando o Cinza Ártico para reduzir a fadiga visual e bordas em Prata */
+
 .input-group input {
     width: 100%;
     padding: 0.75rem 1rem;
@@ -88,7 +88,7 @@ p {
     transition: all 0.2s;
 }
 
-/* Foco do input com a cor de destaque secundária */
+
 .input-group input:focus {
     outline: none;
     border-color: var(--azul-meia-noite);
@@ -96,7 +96,7 @@ p {
     box-shadow: 0 0 0 3px rgba(1, 16, 60, 0.15); 
 }
 
-/* Botão principal em Azul-Meia-Noite Metálico */
+
 .btn-entrar {
     width: 100%;
     padding: 0.875rem;
@@ -113,7 +113,7 @@ p {
     margin-top: 0.5rem;
 }
 
-/* Efeito de hover escurecendo para o Azul Petróleo */
+
 .btn-entrar:hover {
     background-color: var(--azul-petroleo);
 }
@@ -122,7 +122,7 @@ p {
     transform: scale(0.98);
 }
 
-/* Nota informativa usando o Cinza Ártico e borda Prata */
+
 .nota-info {
     margin-top: 2rem;
     padding: 1rem;

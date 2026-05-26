@@ -53,22 +53,18 @@
         <div class="modal-content">
             <h2 id="tituloModalUsr">Novo Usuário</h2>
             <form id="formUsuario" onsubmit="salvarUsuario(event)">
-                
                 <div class="input-group">
                     <label>Nome Completo *</label>
                     <input type="text" id="nomeUsuario" required placeholder="Ex: Maria Souza">
                 </div>
-
                 <div class="input-group">
                     <label>E-mail Corporativo *</label>
                     <input type="email" id="emailUsuario" required placeholder="exemplo@rj.com">
                 </div>
-
                 <div class="input-group">
                     <label>Senha de Acesso *</label>
                     <input type="password" id="senhaUsuario" required placeholder="Defina uma senha">
                 </div>
-
                 <div class="input-group">
                     <label>Cargo / Perfil de Acesso *</label>
                     <select id="cargoUsuario" required>
@@ -79,7 +75,6 @@
                         <option value="OPERADOR">Operador de Laser (Apenas tela de Serviços)</option>
                     </select>
                 </div>
-
                 <div class="modal-footer">
                     <button type="button" class="btn-cancel" onclick="fecharModalUsuario()">Cancelar</button>
                     <button type="submit" class="btn-save">Salvar Credenciais</button>

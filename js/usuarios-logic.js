@@ -1,6 +1,4 @@
-// js/usuarios-logic.js
-
-// 1. Lista padrão do sistema (Atualizada com João Silva e James Estoque)
+// 1. Lista padrão do sistema 
 const equipePadrao = [
     { nome: "João Silva", email: "patrao@rj.com", senha: "123", cargo: "ADMIN" },
     { nome: "James Estoque", email: "estoque@rj.com", senha: "123", cargo: "ESTOQUISTA" },
@@ -17,7 +15,7 @@ if (usuarios.length === 0) {
 
 let indexEdicao = null;
 let usuarioAtual = null;
-let acaoExclusaoPendente = null; // Variável nova do Modal
+let acaoExclusaoPendente = null; 
 
 /**
  * 2. REGRA DE SEGURANÇA MÁXIMA
@@ -37,7 +35,8 @@ function verificarAcessoAdministrativo() {
         return;
     }
 
-    document.getElementById('nomeUsuarioLogado').innerText = `joao.silva (ADMIN)`;
+    const nomeExibicao = usuarioAtual.nome ? usuarioAtual.nome.split(' ')[0] : usuarioAtual.email.split('@')[0];
+    document.getElementById('nomeUsuarioLogado').innerText = `${nomeExibicao} (${usuarioAtual.cargo})`;
 
     const menuContainer = document.getElementById('menuNavegacao');
     menuContainer.innerHTML = `
@@ -151,7 +150,7 @@ function buscarUsuarios() {
     renderizarUsuarios(filtrados);
 }
 
-// --- 5. LÓGICA DO NOVO MODAL DE EXCLUSÃO (CORRIGIDA) ---
+// --- 5.NOVO MODAL DE EXCLUSÃO  ---
 function fecharModalConfirmacao() {
     document.getElementById('modalConfirmacao').style.display = 'none';
     acaoExclusaoPendente = null; 

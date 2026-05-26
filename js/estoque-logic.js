@@ -1,5 +1,3 @@
-// js/estoque-logic.js
-
 let estoque = JSON.parse(localStorage.getItem('estoque_rj')) || [];
 let indexEdicao = null;
 let usuarioAtual = null;
@@ -14,20 +12,15 @@ function verificarAutenticacaoEPermissoes() {
         window.location.href = 'index.html';
         return;
     }
-
     usuarioAtual = JSON.parse(usuarioLogado);
-
     
     if (usuarioAtual.cargo === 'OPERADOR') {
         window.location.href = 'servicos.html';
         return;
     }
-    if (usuarioAtual.cargo === 'FINANCEIRO') {
-        window.location.href = 'movimentacoes.html'; 
-        return;
-    }
 
-    document.getElementById('nomeUsuarioLogado').innerText = `${usuarioAtual.nome} (${usuarioAtual.cargo})`;
+    const nomeExibicao = usuarioAtual.nome ? usuarioAtual.nome.split(' ')[0] : usuarioAtual.email.split('@')[0];
+    document.getElementById('nomeUsuarioLogado').innerText = `${nomeExibicao} (${usuarioAtual.cargo})`;
 
     const menuContainer = document.getElementById('menuNavegacao');
     let menuHTML = '';
@@ -36,8 +29,8 @@ function verificarAutenticacaoEPermissoes() {
         menuHTML += `<a href="relatorios.html" class="tab-item">📊 Relatórios</a>`;
     }
 
-    // Apenas Admin e Estoquista veem a aba Estoque 
-    if (['ADMIN', 'ESTOQUISTA'].includes(usuarioAtual.cargo)) {
+    // ABA ATUAL
+    if (['ADMIN', 'ESTOQUISTA', 'FINANCEIRO'].includes(usuarioAtual.cargo)) {
         menuHTML += `<a href="estoque.html" class="tab-item active">📦 Estoque</a>`;
     }
 
@@ -52,12 +45,11 @@ function verificarAutenticacaoEPermissoes() {
     if (['ADMIN', 'FINANCEIRO', 'OPERADOR'].includes(usuarioAtual.cargo)) {
         menuHTML += `<a href="servicos.html" class="tab-item">⚙️ Serviços</a>`;
     }
-
+    
     if (usuarioAtual.cargo === 'ADMIN') {
         menuHTML += `<a href="usuarios.html" class="tab-item">👤 Usuários</a>`;
         menuHTML += `<a href="logs.html" class="tab-item">🛡️ Logs</a>`;
     }
-
     menuContainer.innerHTML = menuHTML;
 }
 
@@ -188,7 +180,6 @@ function salvarItem(event) {
     fecharModal();
 }
 
-
 // Simulador de Log de Auditoria
 function registrarLogAuditoria(acao) {
     const logs = JSON.parse(localStorage.getItem('logs_rj')) || [];
@@ -228,7 +219,6 @@ function confirmarExclusaoAcao() {
 function remover(index) {
     const alvo = estoque[index]; 
     
-    // Altera o texto do modal elegante
     document.getElementById('textoConfirmacao').innerText = `Deseja realmente remover a peça "${alvo.nome}" do catálogo?\nEsta ação não poderá ser desfeita.`;
     
     // Salva o que vai acontecer quando ele clicar em "Sim, Excluir"

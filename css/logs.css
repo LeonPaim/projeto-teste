@@ -45,10 +45,10 @@ body {
 
 .user { font-size: 0.875rem; color: var(--prata-aluminio); font-weight: 500; }
 
-/* --- BOTÃO DE SAIR ESTILIZADO --- */
+
 .logout-link { 
     color: var(--branco-puro); 
-    background-color: #ef4444; /* Vermelho alerta suave */
+    background-color: #ef4444; 
     text-decoration: none; 
     font-weight: 600; 
     font-size: 0.75rem;
@@ -198,7 +198,7 @@ body {
     gap: 12px;
 }
 
-/* Estilização da linha de log pura */
+
 .log-line {
     font-family: 'Fira Code', monospace;
     font-size: 13px;

@@ -1,7 +1,5 @@
-// js/relatorios-logic.js
-
 let usuarioAtual = null;
-let acaoAposAlerta = null; // Memória para saber se deve mudar de tela após o clique
+let acaoAposAlerta = null; 
 
 /**
  * --- FUNÇÕES DO NOVO MODAL DE ALERTA ---
@@ -15,7 +13,7 @@ function mostrarAlerta(mensagem, acaoAoFechar = null) {
 function fecharModalAlerta() {
     document.getElementById('modalAlerta').style.display = 'none';
     if (acaoAposAlerta) {
-        acaoAposAlerta(); // Executa a ação pendente (ex: voltar para tela inicial)
+        acaoAposAlerta(); 
         acaoAposAlerta = null;
     }
 }
@@ -32,7 +30,6 @@ function verificarAcessoAdministrativo() {
 
     usuarioAtual = JSON.parse(usuarioLogado);
 
-    // Bloqueio inteligente: usa o modal chique e só expulsa após o clique!
     if (usuarioAtual.cargo !== 'ADMIN') {
         mostrarAlerta("Acesso restrito!\nApenas administradores têm acesso ao painel estratégico de relatórios.", () => {
             window.location.href = 'index.html';
@@ -40,7 +37,9 @@ function verificarAcessoAdministrativo() {
         return;
     }
 
-    document.getElementById('nomeUsuarioLogado').innerText = `${usuarioAtual.nome} (${usuarioAtual.cargo})`;
+    // Bloco padrão de exibição do usuário
+    const nomeExibicao = usuarioAtual.nome ? usuarioAtual.nome.split(' ')[0] : usuarioAtual.email.split('@')[0];
+    document.getElementById('nomeUsuarioLogado').innerText = `${nomeExibicao} (${usuarioAtual.cargo})`;
 
     const menuContainer = document.getElementById('menuNavegacao');
     menuContainer.innerHTML = `
@@ -118,4 +117,66 @@ function registrarLogAuditoria(acao) {
 // Inicializa a tela
 document.addEventListener('DOMContentLoaded', () => {
     verificarAcessoAdministrativo();
+    carregarFiltrosDinamicos();
 });
+
+/**
+ * Alimenta os filtros de Mês e Ano dinamicamente com base nos dados reais do sistema
+ */
+function carregarFiltrosDinamicos() {
+    const movimentacoes = JSON.parse(localStorage.getItem('movimentacoes_rj')) || [];
+    const servicos = JSON.parse(localStorage.getItem('servicos_rj')) || [];
+
+    const anosEncontrados = new Set();
+    const mesesEncontrados = new Set();
+
+    const nomesMeses = {
+        "01": "Janeiro", "02": "Fevereiro", "03": "Março", "04": "Abril",
+        "05": "Maio", "06": "Junho", "07": "Julho", "08": "Agosto",
+        "09": "Setembro", "10": "Outubro", "11": "Novembro", "12": "Dezembro"
+    };
+
+    // Função interna para extrair mês/ano de strings de data (Ex: "25/05/2026, 10:30:00")
+    function extrairData(stringData) {
+        if (!stringData) return;
+        const partes = stringData.split(',')[0].split('/');
+        if (partes.length === 3) {
+            const mes = partes[1]; // "05"
+            const ano = partes[2]; // "2026"
+            mesesEncontrados.add(mes);
+            anosEncontrados.add(ano);
+        }
+    }
+
+    // 2. Varremos todas as movimentações e serviços extraindo as datas existentes
+    movimentacoes.forEach(mov => extrairData(mov.dataHora));
+    servicos.forEach(ser => extrairData(ser.data)); // ajuste para o nome do campo de data da O.S.
+
+    // 🚨 REGRA DE SEGURANÇA: Se o sistema for novinho e não tiver NADA gravado ainda,
+    // ele coloca o mês e ano atual para o chefe conseguir testar a tela.
+    if (anosEncontrados.size === 0) {
+        const dataAtual = new Date();
+        const mesAtual = String(dataAtual.getMonth() + 1).padStart(2, '0');
+        const anoAtual = String(dataAtual.getFullYear());
+        mesesEncontrados.add(mesAtual);
+        anosEncontrados.add(anoAtual);
+    }
+
+    const selectAno = document.getElementById('filtroAno');
+    Array.from(anosEncontrados).sort((a, b) => b - a).forEach(ano => {
+        const option = document.createElement('option');
+        option.value = ano;
+        option.innerText = ano;
+        selectAno.appendChild(option);
+    });
+
+    // 4. Injetamos as opções descobertas no SELECT de Meses
+    const selectMes = document.getElementById('filtroMes');
+    // Ordena os meses numericamente ("01", "02"...)
+    Array.from(mesesEncontrados).sort().forEach(numMes => {
+        const option = document.createElement('option');
+        option.value = numMes;
+        option.innerText = nomesMeses[numMes] || numMes;
+        selectMes.appendChild(option);
+    });
+}

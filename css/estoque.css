@@ -36,12 +36,35 @@ body {
     border-bottom: 2px solid var(--prata-aluminio);
 }
 
-.brand { display: flex; align-items: center; gap: 12px; }
-.brand img { height: 40px; width: auto; border-radius: 4px; }
-.brand strong { font-size: 1.1rem; color: var(--prata-aluminio); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
-.user { font-size: 0.875rem; color: var(--prata-aluminio); font-weight: 500; }
+/* Brand / Logo */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
 
-/* --- BOTÃO DE SAIR ESTILIZADO --- */
+.brand img {
+    height: 40px;
+    width: auto;
+    border-radius: 4px;
+}
+
+.brand strong {
+    font-size: 1.1rem;
+    color: var(--prata-aluminio);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Usuário */
+.user {
+    font-size: 0.875rem;
+    color: var(--prata-aluminio);
+    font-weight: 500;
+}
+
+
 .logout-link { 
     color: var(--branco-puro); 
     background-color: #ef4444; 
@@ -64,10 +87,9 @@ body {
 }
 
 .logout-link:active {
-    transform: scale(0.96); /* Efeito de "afundar" ao clicar */
+    transform: scale(0.96); 
 }
 
-/* --- ABAS (TABS BAR) --- */
 .tabs-bar {
     height: 50px;
     background: var(--branco-puro);
@@ -208,23 +230,88 @@ td {
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); border: 2px solid var(--prata-aluminio);
 }
 
-.modal-content h2 { margin-bottom: 1.5rem; font-size: 1.25rem; color: var(--azul-meia-noite); text-transform: uppercase; }
-.input-group { margin-bottom: 1rem; text-align: left;}
-.input-group label { display: block; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--azul-petroleo); text-transform: uppercase; }
-.input-group input, .input-group select, .input-group textarea {
-    width: 100%; padding: 10px; border: 1px solid var(--prata-aluminio); border-radius: 4px; font-size: 0.875rem; background-color: var(--cinza-artico); color: var(--azul-meia-noite);
-}
-.input-group input:focus, .input-group textarea:focus, .input-group select:focus {
-    outline: none; border-color: var(--azul-meia-noite); background-color: var(--branco-puro);
+/* Modal Header */
+.modal-content h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+    color: var(--azul-meia-noite);
+    text-transform: uppercase;
 }
 
-.modal-footer { display: flex; gap: 12px; margin-top: 2rem; }
-.btn-cancel { flex: 1; padding: 12px; background: var(--branco-puro); border: 1px solid var(--prata-aluminio); border-radius: 4px; cursor: pointer; font-weight: 600; color: var(--azul-meia-noite); }
-.btn-save { flex: 1; padding: 12px; background: var(--azul-meia-noite); color: var(--branco-puro); border: none; border-radius: 4px; font-weight: 600; cursor: pointer; text-transform: uppercase; }
-.btn-cancel:hover { background: var(--cinza-artico); }
-.btn-save:hover { background: var(--azul-petroleo); }
+/* Input Groups */
+.input-group {
+    margin-bottom: 1rem;
+    text-align: left;
+}
 
-/* --- BOTÃO DE CONFIRMAÇÃO DE EXCLUSÃO --- */
+.input-group label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--azul-petroleo);
+    text-transform: uppercase;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--prata-aluminio);
+    border-radius: 4px;
+    font-size: 0.875rem;
+    background-color: var(--cinza-artico);
+    color: var(--azul-meia-noite);
+}
+
+.input-group input:focus,
+.input-group textarea:focus,
+.input-group select:focus {
+    outline: none;
+    border-color: var(--azul-meia-noite);
+    background-color: var(--branco-puro);
+}
+
+/* Modal Footer */
+.modal-footer {
+    display: flex;
+    gap: 12px;
+    margin-top: 2rem;
+}
+
+/* Botões */
+.btn-cancel {
+    flex: 1;
+    padding: 12px;
+    background: var(--branco-puro);
+    border: 1px solid var(--prata-aluminio);
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--azul-meia-noite);
+}
+
+.btn-save {
+    flex: 1;
+    padding: 12px;
+    background: var(--azul-meia-noite);
+    color: var(--branco-puro);
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.btn-cancel:hover {
+    background: var(--cinza-artico);
+}
+
+.btn-save:hover {
+    background: var(--azul-petroleo);
+}
+
 .btn-delete-confirm {
     flex: 1; 
     padding: 12px; 

@@ -1,4 +1,3 @@
-// js/clientes-logic.js
 
 let clientes = JSON.parse(localStorage.getItem('clientes_rj')) || [];
 let indexEdicao = null;
@@ -9,54 +8,45 @@ let usuarioAtual = null;
  */
 function verificarAutenticacaoEPermissoes() {
     const usuarioLogado = localStorage.getItem('usuarioLogado');
-    
-    // Se não tem ninguém logado, chuta pro login
     if (!usuarioLogado) {
         window.location.href = 'index.html';
         return;
     }
-
     usuarioAtual = JSON.parse(usuarioLogado);
 
-    // Regra: Estoquista não tem acesso à tela de Clientes
     if (usuarioAtual.cargo === 'ESTOQUISTA') {
         window.location.href = 'estoque.html';
         return;
     }
 
-    // Injeta o nome e cargo no Top Nav
-    document.getElementById('nomeUsuarioLogado').innerText = `${usuarioAtual.email.split('@')[0]} (${usuarioAtual.cargo})`;
+    const nomeExibicao = usuarioAtual.nome ? usuarioAtual.nome.split(' ')[0] : usuarioAtual.email.split('@')[0];
+    document.getElementById('nomeUsuarioLogado').innerText = `${nomeExibicao} (${usuarioAtual.cargo})`;
 
-    // Constrói as abas baseadas no cargo
     const menuContainer = document.getElementById('menuNavegacao');
     let menuHTML = '';
 
-    // Abas Gerenciais (Apenas Admin)
     if (usuarioAtual.cargo === 'ADMIN') {
         menuHTML += `<a href="relatorios.html" class="tab-item">📊 Relatórios</a>`;
     }
 
-    // Abas Operacionais
-    if (['ADMIN'].includes(usuarioAtual.cargo)) {
+    if (['ADMIN', 'ESTOQUISTA', 'FINANCEIRO'].includes(usuarioAtual.cargo)) {
         menuHTML += `<a href="estoque.html" class="tab-item">📦 Estoque</a>`;
     }
+
     if (['ADMIN', 'FINANCEIRO'].includes(usuarioAtual.cargo)) {
         menuHTML += `<a href="movimentacoes.html" class="tab-item">📝 Movimentações</a>`;
     }
     
-    // A própria aba de Clientes (Ativa) - Financeiro e Admin veem
     menuHTML += `<a href="clientes.html" class="tab-item active">👥 Clientes</a>`;
 
     if (['ADMIN', 'FINANCEIRO', 'OPERADOR'].includes(usuarioAtual.cargo)) {
         menuHTML += `<a href="servicos.html" class="tab-item">⚙️ Serviços</a>`;
     }
 
-    // Mais Abas Gerenciais (Apenas Admin)
     if (usuarioAtual.cargo === 'ADMIN') {
         menuHTML += `<a href="usuarios.html" class="tab-item">👤 Usuários</a>`;
         menuHTML += `<a href="logs.html" class="tab-item">🛡️ Logs</a>`;
     }
-
     menuContainer.innerHTML = menuHTML;
 }
 
@@ -124,7 +114,6 @@ function salvarCliente(e) {
     };
 
     if (indexEdicao !== null) {
-        // LOGICA DE LOG DE AUDITORIA: Só entra aqui quando clica em Editar
         registrarLogAuditoria(`Editou o cliente: ${clientes[indexEdicao].nome}`);
         clientes[indexEdicao] = novoCliente;
     } else {
@@ -153,12 +142,54 @@ function prepararEdicao(index) {
     abrirModalCliente();
 }
 
-function excluirCliente(index) {
-    if (confirm(`Deseja realmente excluir o cliente ${clientes[index].nome}?\nEsta ação não poderá ser desfeita.`)) {
-        clientes.splice(index, 1);
-        localStorage.setItem('clientes_rj', JSON.stringify(clientes));
-        renderizarClientes();
+// Variável global para "lembrar" qual cliente será apagado
+let idClienteParaExcluir = null;
+
+
+function excluirCliente(id) {
+    
+    if (usuarioAtual.cargo !== 'ADMIN') {
+        alert("Apenas administradores podem excluir clientes.");
+        return;
     }
+
+    idClienteParaExcluir = id;
+    document.getElementById('textoModalExclusao').innerText = "Tem certeza que deseja excluir este Cliente? Esta ação não poderá ser desfeita.";
+    document.getElementById('modalExclusaoCliente').style.display = 'flex';
+}
+
+// 2. Função para fechar o modal
+function fecharModalExclusao() {
+    idClienteParaExcluir = null; // Limpa a memória
+    document.getElementById('modalExclusaoCliente').style.display = 'none';
+}
+
+// 3. Função que executa a exclusão após o clique em "Sim, Excluir"
+function executarExclusaoCliente() {
+    if (idClienteParaExcluir === null) return;
+
+    let clientes = JSON.parse(localStorage.getItem('clientes_rj')) || [];
+    
+    // Transforma a ID recebida em Número (Index)
+    const index = Number(idClienteParaExcluir);
+
+    // Resgata o cliente para o Log antes de apagar
+    const clienteDeletado = clientes[index];
+    
+    if (clienteDeletado && typeof registrarLogAuditoria === 'function') {
+        registrarLogAuditoria(`Excluiu o cliente: ${clienteDeletado.nome || 'Sem Nome'}`);
+    }
+
+    
+    if (index >= 0 && index < clientes.length) {
+        clientes.splice(index, 1);
+    }
+    
+    localStorage.setItem('clientes_rj', JSON.stringify(clientes));
+    
+    fecharModalExclusao(); 
+    renderizarClientes(clientes);
+    
 }
 
 function buscarClientes() {
@@ -184,6 +215,39 @@ function registrarLogAuditoria(acao) {
     });
     
     localStorage.setItem('logs_rj', JSON.stringify(logs));
+}
+
+// --- MÁSCARAS DE UI/UX ---
+
+function mascaraCPFCNPJ(input) {
+    // Remove tudo que não for número
+    let valor = input.value.replace(/\D/g, '');
+    
+    if (valor.length <= 11) {
+        // Máscara de CPF: 000.000.000-00
+        valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+        valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+        valor = valor.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    } else {
+        // Máscara de CNPJ: 00.000.000/0000-00
+        valor = valor.replace(/^(\d{2})(\d)/, '$1.$2');
+        valor = valor.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+        valor = valor.replace(/\.(\d{3})(\d)/, '.$1/$2');
+        valor = valor.replace(/(\d{4})(\d)/, '$1-$2');
+    }
+    
+    input.value = valor;
+}
+
+function mascaraTelefone(input) {
+    // Remove tudo que não for número
+    let valor = input.value.replace(/\D/g, '');
+    
+    // Máscara de Telefone: (00) 0000-0000 ou (00) 00000-0000
+    valor = valor.replace(/^(\d{2})(\d)/g, '($1) $2');
+    valor = valor.replace(/(\d)(\d{4})$/, '$1-$2');
+    
+    input.value = valor;
 }
 
 // Fluxo de Inicialização

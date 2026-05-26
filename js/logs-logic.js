@@ -1,5 +1,3 @@
-// js/logs-logic.js
-
 let logsLocais = JSON.parse(localStorage.getItem('logs_rj')) || [];
 let usuarioAtual = null;
 
@@ -22,7 +20,9 @@ function verificarAcessoAdministrativo() {
         return;
     }
 
-    document.getElementById('nomeUsuarioLogado').innerText = `${usuarioAtual.email.split('@')[0]} (${usuarioAtual.cargo})`;
+    // Bloco padrão de exibição do usuário
+    const nomeExibicao = usuarioAtual.nome ? usuarioAtual.nome.split(' ')[0] : usuarioAtual.email.split('@')[0];
+    document.getElementById('nomeUsuarioLogado').innerText = `${nomeExibicao} (${usuarioAtual.cargo})`;
 
     const menuContainer = document.getElementById('menuNavegacao');
     menuContainer.innerHTML = `

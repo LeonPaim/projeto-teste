@@ -41,7 +41,7 @@ body {
 .brand strong { font-size: 1.1rem; color: var(--prata-aluminio); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
 .user { font-size: 0.875rem; color: var(--prata-aluminio); font-weight: 500; }
 
-/* --- BOTÃO DE SAIR ESTILIZADO --- */
+
 .logout-link { 
     color: var(--branco-puro); 
     background-color: #ef4444; 
@@ -234,8 +234,6 @@ body {
     100% { opacity: 0.7; }
 }
 
-
-/* --- BOTÃO DO MODAL DE ALERTA --- */
 .btn-alerta {
     padding: 12px 30px;
     background-color: var(--azul-petroleo);

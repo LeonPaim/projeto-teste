@@ -59,7 +59,6 @@
             </div>
         </main>
     </div>
-
     <div id="modalServico" class="modal">
         <div class="modal-content" style="max-width: 600px;">
             <h2 id="tituloModalServ">Nova Ordem de Serviço</h2>
@@ -73,10 +72,8 @@
                     <div class="input-group" style="flex: 1;">
                         <label>Categoria da Peça *</label>
                         <select id="categoriaServico" required>
-                            <option value="" disabled selected>Selecione...</option>
-                            <option value="Peça de Maquinário">Peça de Maquinário</option>
-                            <option value="Engrenagem / Lâmina">Engrenagem / Lâmina</option>
-                            <option value="Estrutura Metálica">Estrutura Metálica</option>
+                            <option value="" disabled selected>Selecione a categoria...</option>
+                            <option value="Canivete">Canivete</option>
                             <option value="Peças Gerais">Peças Gerais</option>
                         </select>
                     </div>
@@ -95,9 +92,9 @@
                         </select>
                     </div>
                     
-                    <div class="input-group" style="flex: 1;">
+                    <div class="input-group" id="grupoTamanhoCorte">
                         <label>Tamanho do Corte *</label>
-                        <input type="text" id="tamanhoChapa" required placeholder="Ex: 50x50cm">
+                        <input type="text" id="tamanhoCorte" placeholder="Ex: 150x200mm">
                     </div>
                 </div>
 
@@ -151,5 +148,40 @@
         </div>
     </div>
     <script src="js/servicos-logic.js"></script>
+ <div id="modalConfirmacao" class="modal">
+    <div class="modal-content" style="max-width: 400px; text-align: center;">
+        <h2 style="color: #0284c7; margin-bottom: 10px; font-size: 2rem;">❓</h2>
+        <h3 style="color: var(--azul-meia-noite); margin-bottom: 10px;">Confirmação</h3>
+        <p id="textoModalConfirmacao" style="color: var(--azul-petroleo); margin-bottom: 25px; line-height: 1.5; font-size: 0.9rem;"></p>
+        
+        <div class="modal-footer" style="margin-top: 0; display: flex; gap: 10px; justify-content: center;">
+            <button type="button" class="btn-cancel" onclick="fecharModalConfirmacao()" style="flex: 1;">Cancelar</button>
+            <button type="button" class="btn-save" id="btnConfirmarAcao" style="flex: 1;">Sim, Salvar</button>
+        </div>
+    </div>
+</div>
+<div id="modalAlerta" class="modal">
+    <div class="modal-content" style="max-width: 400px; text-align: center;">
+        <h2 style="color: #ea580c; margin-bottom: 10px; font-size: 2rem;">⚠️</h2>
+        <h3 style="color: var(--azul-meia-noite); margin-bottom: 10px;">Aviso!</h3>
+        <p id="textoModalAlerta" style="color: var(--azul-petroleo); margin-bottom: 25px; line-height: 1.5; font-size: 0.9rem;"></p>
+        
+        <div class="modal-footer" style="margin-top: 0; display: flex; justify-content: center;">
+            <button type="button" class="btn-cancel" onclick="fecharModalAlerta()" style="width: 100%;">Entendi</button>
+        </div>
+    </div>
+</div>
+<div id="modalExclusaoServico" class="modal">
+    <div class="modal-content" style="max-width: 400px; text-align: center;">
+        <h2 style="color: #dc2626; margin-bottom: 10px; font-size: 2rem;">⚠️</h2>
+        <h3 style="color: var(--azul-meia-noite); margin-bottom: 10px;">Atenção!</h3>
+        <p id="textoModalExclusao" style="color: var(--azul-petroleo); margin-bottom: 25px; line-height: 1.5; font-size: 0.9rem;"></p>
+        
+        <div class="modal-footer" style="margin-top: 0; display: flex; gap: 10px;">
+            <button type="button" class="btn-cancel" onclick="fecharModalExclusao()" style="flex: 1;">Cancelar</button>
+            <button type="button" class="btn-delete-confirm" onclick="executarExclusaoServico()" style="flex: 1;">Sim, Excluir</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>

@@ -1,5 +1,3 @@
-// js/servicos-logic.js
-
 let servicos = JSON.parse(localStorage.getItem('servicos_rj')) || [];
 let clientes = JSON.parse(localStorage.getItem('clientes_rj')) || [];
 let indexEdicao = null;
@@ -15,16 +13,15 @@ function verificarAutenticacaoEPermissoes() {
         window.location.href = 'index.html';
         return;
     }
-
     usuarioAtual = JSON.parse(usuarioLogado);
 
-    // Regra: Estoquista não tem acesso a Serviços
     if (usuarioAtual.cargo === 'ESTOQUISTA') {
         window.location.href = 'estoque.html';
         return;
     }
 
-    document.getElementById('nomeUsuarioLogado').innerText = `${usuarioAtual.email.split('@')[0]} (${usuarioAtual.cargo})`;
+    const nomeExibicao = usuarioAtual.nome ? usuarioAtual.nome.split(' ')[0] : usuarioAtual.email.split('@')[0];
+    document.getElementById('nomeUsuarioLogado').innerText = `${nomeExibicao} (${usuarioAtual.cargo})`;
 
     const menuContainer = document.getElementById('menuNavegacao');
     let menuHTML = '';
@@ -33,7 +30,7 @@ function verificarAutenticacaoEPermissoes() {
         menuHTML += `<a href="relatorios.html" class="tab-item">📊 Relatórios</a>`;
     }
 
-    if (['ADMIN'].includes(usuarioAtual.cargo)) {
+    if (['ADMIN', 'ESTOQUISTA', 'FINANCEIRO'].includes(usuarioAtual.cargo)) {
         menuHTML += `<a href="estoque.html" class="tab-item">📦 Estoque</a>`;
     }
 
@@ -41,15 +38,13 @@ function verificarAutenticacaoEPermissoes() {
         menuHTML += `<a href="movimentacoes.html" class="tab-item">📝 Movimentações</a>`;
         menuHTML += `<a href="clientes.html" class="tab-item">👥 Clientes</a>`;
     }
-
-    // Tela Atual
+    
     menuHTML += `<a href="servicos.html" class="tab-item active">⚙️ Serviços</a>`;
 
     if (usuarioAtual.cargo === 'ADMIN') {
         menuHTML += `<a href="usuarios.html" class="tab-item">👤 Usuários</a>`;
         menuHTML += `<a href="logs.html" class="tab-item">🛡️ Logs</a>`;
     }
-
     menuContainer.innerHTML = menuHTML;
 }
 
@@ -89,7 +84,7 @@ function renderizarServicos(dados = null) {
                             <span style="color: var(--azul-meia-noite);">Tam: ${s.tamanhoChapa || '---'}</span>
                          </div>`;
         } else {
-            // Agora a tabela mostra que é do cliente, mas exibe o tamanho!
+            
             infoChapa = `<div style="font-size: 11px; line-height: 1.2;">
                             <span style="color: var(--prata-aluminio); font-weight: 700; text-transform: uppercase;">Cliente</span><br>
                             <span style="color: var(--azul-meia-noite);">Tam: ${s.tamanhoChapa || '---'}</span>
@@ -144,20 +139,38 @@ function salvarServico(e) {
     const statusNovo = document.getElementById('statusServico').value;
     const valorFinal = document.getElementById('valorFinalServico').value;
     const agora = new Date().toLocaleString('pt-BR');
-    const nomeResponsavel = usuarioAtual ? usuarioAtual.email.split('@')[0] : 'Sistema';
+    const nomeResponsavel = usuarioAtual ? (usuarioAtual.nome ? usuarioAtual.nome.split(' ')[0] : usuarioAtual.email.split('@')[0]) : 'Sistema';
 
-    if (!confirm(`Deseja confirmar a alteração da O.S. para o status: ${statusNovo}?`)) {
-        return;
-    }
-
+    
     if (statusNovo === 'Nota Emitida' && !valorFinal) {
-        alert("Por favor, informe o Valor Final para emitir a nota.");
+        abrirModalAlerta("Por favor, informe o Valor Final para emitir a nota.");
         return;
     }
+
+    const valorTamanhoCorte = document.getElementById('tamanhoCorte') ? document.getElementById('tamanhoCorte').value : '';
+
+    // Guarda as variáveis temporariamente na memória global
+    dadosPendentesParaSalvar = {
+        statusNovo, valorFinal, agora, nomeResponsavel, valorTamanhoCorte
+    };
+
+    // 2. Troca do "confirm" pelo Modal de Confirmação
+    abrirModalConfirmacao(
+        `Deseja confirmar a gravação da O.S. com o status: ${statusNovo}?`,
+        executarSalvamentoOculto
+    );
+}
+
+
+function executarSalvamentoOculto() {
+    if (!dadosPendentesParaSalvar) return;
+
+    // Resgata os dados guardados
+    const { statusNovo, valorFinal, agora, nomeResponsavel, valorTamanhoCorte } = dadosPendentesParaSalvar;
 
     servicos = JSON.parse(localStorage.getItem('servicos_rj')) || [];
-
     let historicoLogs = [];
+
     if (indexEdicao !== null) {
         historicoLogs = servicos[indexEdicao].historico || [];
         const ultimoStatus = historicoLogs.length > 0 ? historicoLogs[historicoLogs.length - 1].status : null;
@@ -178,7 +191,7 @@ function salvarServico(e) {
         orcamento: document.getElementById('orcamentoServico').value,
         valorFinal: valorFinal || null,
         origemChapa: document.getElementById('origemChapa').value,
-        tamanhoChapa: document.getElementById('tamanhoChapa').value,
+        tamanhoChapa: valorTamanhoCorte,
         chapaSelecionada: document.getElementById('origemChapa').value === 'Empresa' ? document.getElementById('chapaParaCortar').value : null,
         status: statusNovo,
         tempo: document.getElementById('tempoServico').value,
@@ -193,6 +206,10 @@ function salvarServico(e) {
     }
 
     localStorage.setItem('servicos_rj', JSON.stringify(servicos));
+    
+    // Limpeza após salvar
+    dadosPendentesParaSalvar = null;
+    fecharModalConfirmacao();
     fecharModalServico();
 
     setTimeout(() => {
@@ -258,8 +275,29 @@ function gerenciarCamposDinamicos() {
 
 function toggleTamanhoChapa() {
     const origem = document.getElementById('origemChapa').value;
-    const group = document.getElementById('groupDadosChapaEmpresa');
-    group.style.display = origem === 'Empresa' ? 'block' : 'none';
+    
+    const groupEmpresa = document.getElementById('groupDadosChapaEmpresa');
+    const groupTamanho = document.getElementById('grupoTamanhoCorte');
+    
+    const inputTamanho = document.getElementById('tamanhoCorte');
+    const inputChapa = document.getElementById('chapaParaCortar');
+
+    if (origem === 'Empresa') {
+        groupEmpresa.style.display = 'block';
+        groupTamanho.style.display = 'block';
+        
+        inputTamanho.required = true;
+        inputChapa.required = true;
+    } else {
+        groupEmpresa.style.display = 'none';
+        groupTamanho.style.display = 'none';
+        
+        inputTamanho.required = false;
+        inputTamanho.value = '';
+        
+        inputChapa.required = false;
+        inputChapa.value = '';
+    }
 }
 
 function filtrarPorCliente() {
@@ -272,15 +310,21 @@ function abrirModalServico() {
     clientes = JSON.parse(localStorage.getItem('clientes_rj')) || [];
     const selectCliente = document.getElementById('clienteServico');
     
-    // Mudança de navegação: joga para 'clientes.html' se não houver
-    if (clientes.length === 0) {
-        alert("Cadastre clientes na base antes de gerar uma Ordem de Serviço.");
-        window.location.href = 'clientes.html';
-        return;
-    }
     
-    selectCliente.innerHTML = '<option value="" disabled selected>Selecione...</option>' + 
+    if (clientes.length === 0) {
+        abrirModalAlerta(
+            "Cadastre clientes na base antes de gerar uma Ordem de Serviço.",
+            () => { window.location.href = 'clientes.html'; } 
+        );
+        return; // Interrompe a função para não abrir o modal da O.S. por trás
+    }
+
+    // Se tiver cliente, o fluxo segue normalmente
+    toggleTamanhoChapa();
+    
+    selectCliente.innerHTML = '<option value="" disabled selected>Selecione o cliente...</option>' + 
         clientes.map(c => `<option value="${c.nome}">${c.nome}</option>`).join('');
+        
     document.getElementById('modalServico').style.display = 'flex';
 }
 
@@ -294,13 +338,47 @@ function fecharModalServico() {
     document.getElementById('tituloModalServ').innerText = "Nova Ordem de Serviço";
 }
 
-function excluirServico(index) {
-    if (confirm("ATENÇÃO: Deseja realmente excluir esta Ordem de Serviço?")) {
-        registrarLogAuditoria(`Excluiu a O.S. do cliente: ${servicos[index].cliente}`);
-        servicos.splice(index, 1);
-        localStorage.setItem('servicos_rj', JSON.stringify(servicos));
-        renderizarServicos();
+// Variável global para "lembrar" qual serviço vai ser apagado enquanto o modal fica aberto
+let idServicoParaExcluir = null;
+
+// 1. Função chamada pelo botão vermelho da lixeira na tabela
+function excluirServico(id) {
+    idServicoParaExcluir = id;
+    document.getElementById('textoModalExclusao').innerText = "Tem certeza que deseja excluir esta Ordem de Serviço? Esta ação não poderá ser desfeita.";
+    document.getElementById('modalExclusaoServico').style.display = 'flex';
+}
+
+// 2. Função para fechar o modal caso o Admin desista
+function fecharModalExclusao() {
+    idServicoParaExcluir = null; // Limpa a memória
+    document.getElementById('modalExclusaoServico').style.display = 'none';
+}
+
+// 3. Função que realmente apaga (acionada pelo botão "Sim, Excluir")
+function executarExclusaoServico() {
+    if (idServicoParaExcluir === null) return;
+
+    let servicos = JSON.parse(localStorage.getItem('servicos_rj')) || [];
+    
+    // Como estamos recebendo a POSIÇÃO (index) da tabela, garantimos que é um número
+    const index = Number(idServicoParaExcluir);
+
+    // Pega o serviço exato daquela posição para salvar no Log
+    const servicoDeletado = servicos[index];
+    
+    if (servicoDeletado && typeof registrarLogAuditoria === 'function') {
+        registrarLogAuditoria(`Excluiu a O.S. do cliente: ${servicoDeletado.cliente}`);
     }
+
+    // O comando splice vai na posição exata e remove 1 item dali
+    if (index >= 0 && index < servicos.length) {
+        servicos.splice(index, 1);
+    }
+    
+    localStorage.setItem('servicos_rj', JSON.stringify(servicos));
+    
+    fecharModalExclusao(); 
+    renderizarServicos(); 
 }
 
 function filtrarServicos(status) {
@@ -313,6 +391,38 @@ function filtrarServicos(status) {
         }
     });
     renderizarServicos();
+}
+
+// Variável global para segurar os dados enquanto o modal de confirmação está aberto
+let dadosPendentesParaSalvar = null;
+
+function abrirModalConfirmacao(mensagem, acaoAoConfirmar) {
+    document.getElementById('textoModalConfirmacao').innerText = mensagem;
+    const btnConfirmar = document.getElementById('btnConfirmarAcao');
+    btnConfirmar.onclick = acaoAoConfirmar; 
+    document.getElementById('modalConfirmacao').style.display = 'flex';
+}
+
+function fecharModalConfirmacao() {
+    document.getElementById('modalConfirmacao').style.display = 'none';
+}
+
+let acaoAposAlerta = null;
+
+function abrirModalAlerta(mensagem, acaoOpcional = null) {
+    document.getElementById('textoModalAlerta').innerText = mensagem;
+    acaoAposAlerta = acaoOpcional; // Guarda a instrução na memória
+    document.getElementById('modalAlerta').style.display = 'flex';
+}
+
+function fecharModalAlerta() {
+    document.getElementById('modalAlerta').style.display = 'none';
+    
+    // Se tiver alguma ação guardada (como redirecionar), executa agora!
+    if (acaoAposAlerta) {
+        acaoAposAlerta(); 
+        acaoAposAlerta = null; // Limpa a memória
+    }
 }
 
 // Simulador de Log de Auditoria

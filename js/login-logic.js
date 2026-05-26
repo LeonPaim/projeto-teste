@@ -1,5 +1,3 @@
-// js/login-logic.js
-
 // 1. Lista padrão (garante que os primeiros usuários sempre existam)
 const equipePadrao = [
     { nome: "João Silva", email: "patrao@rj.com", senha: "123", cargo: "ADMIN" },

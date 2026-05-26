@@ -18,7 +18,6 @@
                 <a href="index.html" class="logout-link" onclick="localStorage.removeItem('usuarioLogado')">Sair</a>
             </div>
         </nav>
-
         <div class="tabs-bar" id="menuNavegacao">
             </div>
 
@@ -53,7 +52,6 @@
             </div>
         </main>
     </div>
-
     <div id="modalMovimentacao" class="modal">
         <div class="modal-content">
             <h2>Nova Movimentação</h2>
@@ -82,7 +80,8 @@
                 
                 <div class="input-group">
                     <label>Quantidade *</label>
-                    <input type="number" id="qtdMov" value="0" min="1" required>
+                    <input type="number" id="qtdMov" required min="1" oninput="document.getElementById('erroEstoqueQtd').style.display='none'; this.style.border='';">
+                    <span id="erroEstoqueQtd" style="color: #dc2626; font-size: 11px; margin-top: 4px; display: none;"></span>
                 </div>
                 
                 <div class="input-group">
@@ -91,6 +90,8 @@
                 </div>
                 
                 <div class="modal-footer">
+                    <div id="erroEstoque" style="color: #dc2626; font-size: 13px; font-weight: bold; margin-bottom: 15px; display: none; text-align: center; background-color: #fee2e2; padding: 10px; border-radius: 4px;">
+                    </div>
                     <button type="button" class="btn-cancel" onclick="fecharModalMov()">Cancelar</button>
                     <button type="submit" class="btn-save">Salvar</button>
                 </div>
@@ -108,7 +109,18 @@
             </div>
         </div>
     </div>
-
     <script src="js/movimentacoes-logic.js"></script>
+    <div id="modalExclusaoMovimentacao" class="modal">
+    <div class="modal-content" style="max-width: 400px; text-align: center;">
+        <h2 style="color: #dc2626; margin-bottom: 10px; font-size: 2rem;">⚠️</h2>
+        <h3 style="color: var(--azul-meia-noite); margin-bottom: 10px;">Atenção!</h3>
+        <p id="textoModalExclusao" style="color: var(--azul-petroleo); margin-bottom: 25px; line-height: 1.5; font-size: 0.9rem;"></p>
+        
+        <div class="modal-footer" style="margin-top: 0; display: flex; gap: 10px;">
+            <button type="button" class="btn-cancel" onclick="fecharModalExclusao()" style="flex: 1;">Cancelar</button>
+            <button type="button" class="btn-delete-confirm" onclick="executarExclusaoMovimentacao()" style="flex: 1;">Sim, Excluir</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>
